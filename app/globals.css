@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* addition of a starry background */
+@keyframes stars {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 -1000px;
+  }
+}
+
+html, body {
+    font-family: 'IBM Plex Mono', monospace;
+    background: #0F0F0F;
+    animation: stars 100s linear infinite;
+    color: #BBBEBF;
+    overflow-x: hidden;
+  }
+  
+.nav-item:hover {
+  box-shadow: none;
+}
