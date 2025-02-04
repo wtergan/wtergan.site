@@ -4,8 +4,8 @@ import { ReactNode } from 'react'
 import HeaderNav from './HeaderNav'
 
 export const metadata = {
-  title: 'My ML/CS Blog',
-  description: 'Personal blog site showcasing projects, blog posts, papers, etc.',
+  title: 'wtergan',
+  description: 'showcasing projects, blog posts, papers, etc.',
 }
 
 interface RootLayoutProps {
