@@ -20,7 +20,7 @@ const HeaderNav = () => {
   const pathname = usePathname()
 
   return (
-    <nav className="flex justify-between items-center px-6 py-4 bg-gray-900 text-gray-300">
+    <nav className="flex flex-wrap justify-between items-center px-6 py-4 bg-gray-900 text-gray-300">
       {/* Left Navigation Group */}
       <div className="flex space-x-8">
         {navItemsLeft.map((nav) => {

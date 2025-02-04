@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 const HomePage = () => {
   return (
-    <section className="w-screen h-screen flex items-start justify-center pt-16 bg-gray-900 text-gray-300">
+    <section className="w-full h-screen flex flex-col items-center justify-center px-4 pt-16 bg-gray-900 text-gray-300 text-center">
       {/* homepage content */}
       <div className="text-center max-w-lg">
         <h1 className="text-3xl font-bold">wtergan</h1>
