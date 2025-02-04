@@ -72,17 +72,13 @@ const PapersPage = () => {
   return (
     <section>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">papers</h1>
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            placeholder="Search papers..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-4 py-2 bg-gray-900 text-gray-300 rounded border border-gray-300 focus:outline-none focus:border-blue-400"
-          />
-          <h2 className="text-xl font-bold">Date Read</h2>
-        </div>
+        <input 
+          type="text"
+          placeholder="Seach papers..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-1/3 px-4 py-2 bg-gray-900 text-gray-300 rounded border border-gray-300 focus:outline-none focus:border-blue-400"
+        />
       </div>
       <ul className="space-y-0">
         {filteredPapers.map((paper) => (

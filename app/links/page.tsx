@@ -70,18 +70,14 @@ const LinksPage = () => {
   */
   return (
     <section>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">links</h1>
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            placeholder="Search links..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-4 py-2 bg-gray-900 text-gray-300 rounded border border-gray-300 focus:outline-none focus:border-blue-400"
-          />
-          <h2 className="text-xl font-bold">Date Read</h2>
-        </div>
+      <div className="flex justify-between items-center w-full mb-4">
+        <input
+          type="text"
+          placeholder="Search links..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-1/3 px-4 py-2 bg-gray-900 text-gray-300 rounded border border-gray-300 focus:outline-none focus:border-blue-400"
+        />
       </div>
       <ul className="space-y-0">
         {filteredLinks.map((link) => (
