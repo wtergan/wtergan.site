@@ -23,3 +23,39 @@ html, body {
 .nav-item:hover {
   box-shadow: none;
 }
+
+/*
+refactorization of the hover tooltip styling, which shows available descriptions of papers/links. 
+  - hides the desc, displaying only on hover via 'group-hover:block'
+  - prevention of cut-off text via 'break-words', 'white-space'
+  - dynamic adjusting of width based on screen size via 'sm, md, etc.'
+*/
+.tooltip {
+  @apply absolute left-0 z-50 max-w-xs sm:max-w-sm md:max-w-md 
+         bg-gray-800 bg-opacity-90 text-gray-200 text-sm p-2 rounded shadow-md 
+         hidden group-hover:block break-words;
+  bottom: 100%;
+  margin-bottom: 8px;
+  white-space: normal;
+}
+
+/*
+refactorization of the paper/link entry cards, which actually displays each respective paper/link entry.
+  - padding, rounding of border and shadows of course
+  - box-shadow when hovering over bar, via 'hover:shadow-md'
+  - 'cursor-pointer' to change cursor to pointing hand when hovering
+  - smooth transition effect to shadow via 'transition-shadow'
+*/
+.entry-card {
+  @apply p-4 bg-gray-900 rounded shadow hover:shadow-md cursor-pointer transition-shadow;
+}
+
+/*
+refactorization of the search bar styling, which dislpays a search bar for input.
+  - dynamic adjusting of width based on screen size via 'w-full', 'sm' and 'md'
+  - rounded borders that turns blue when active, via 'focus:border-blue-400'
+*/  
+.search-bar {
+  @apply w-full sm:w-1/2 md:w-1/3 px-4 py-2 bg-gray-900 text-gray-300 rounded border border-gray-300
+         focus:outline-none focus:border-blue-400;
+}

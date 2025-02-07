@@ -15,7 +15,8 @@ type Link = {
   title: string;
   url: string;
   date: string;
-  note?: string;    // ? means this property is optional.
+  note?: string;    // ? means this property is optional.\
+  desc?: string;
 };
 
 /*
@@ -67,6 +68,7 @@ const LinksPage = () => {
     - renders a search input that filters links by title, url, note in real-time.
     - each link is displayed as an interactive card w/ title, url, note and read date.
     - clickable/keyboard accessible.
+    - a tooltip that displays a brief description of a link when hovered over.
   */
   return (
     <section>
@@ -76,7 +78,7 @@ const LinksPage = () => {
           placeholder="Search links..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-1/3 px-4 py-2 bg-gray-900 text-gray-300 rounded border border-gray-300 focus:outline-none focus:border-blue-400"
+          className="search-bar"
         />
       </div>
       <ul className="space-y-0">
@@ -89,11 +91,11 @@ const LinksPage = () => {
               onKeyDown={(e) => {
                 if (e.key === "Enter") window.open(link.url, '_blank');
               }}
-              className="p-4 bg-gray-900 rounded shadow hover:shadow-md cursur-pointer transition-shadow"
+              className="entry-card"
             >
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-semibold">{link.title}</h2>
+                  <h2 className="text-lg font-semibold">{link.title}</h2>
                   <p className="text-sm">{link.note}</p>
                 </div>
                 <p className="text-sm text-gray-300">
@@ -105,6 +107,10 @@ const LinksPage = () => {
                 </p>
               </div>
             </article>  
+            {/* tooltip for the hover */}
+            <div className="tooltip">
+              {link.desc || "No description available"}
+            </div>
           </li>
         ))}
       </ul>

@@ -25,9 +25,9 @@ def get_table_data():
         entry = {}
         while True:
             if table_name == 'links':
-                print(f"{table_name} fields: title, url, note (if needed). id not needed.")
+                print(f"{table_name} fields: title, url, date, note (if needed), desc (if needed). id not needed.")
             elif table_name == 'papers':
-                print(f"{table_name} fields: title, authors, url, year, date. id not needed.")
+                print(f"{table_name} fields: title, authors, url, year, date, desc (if needed). id not needed.")
             field = input("field name (or end to stop entry), or end to finish: ").strip().lower()
             if field == 'end':
                 break

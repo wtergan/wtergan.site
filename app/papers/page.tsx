@@ -17,6 +17,7 @@ type Paper = {
   url: string;
   year: number;
   date: string;
+  desc?: string;
 };
 
 /*
@@ -68,6 +69,7 @@ const PapersPage = () => {
     - renders a search input that filters papers by title, authors, or year in real time.
     - each paper is displayed as an interactive card w/ title, authors, year, and read date.
     - clickable/keyboard accessible.
+    - a tooltip that displays a brief description of a page when hovered over.
   */
   return (
     <section>
@@ -77,12 +79,12 @@ const PapersPage = () => {
           placeholder="Seach papers..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-1/3 px-4 py-2 bg-gray-900 text-gray-300 rounded border border-gray-300 focus:outline-none focus:border-blue-400"
+          className="search-bar"
         />
       </div>
       <ul className="space-y-0">
         {filteredPapers.map((paper) => (
-          <li key={paper.id}>
+          <li key={paper.id} className="relative group">
             <article
               tabIndex={0}
               aria-label={`${paper.title} by ${paper.authors}`}
@@ -90,11 +92,11 @@ const PapersPage = () => {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') window.open(paper.url, '_blank');
               }}
-              className="p-4 bg-gray-900 rounded shadow hover:shadow-md cursor-pointer transition-shadow"
+              className="entry-card"
             >
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-semibold">{paper.title}</h2>
+                  <h2 className="text-lg font-semibold">{paper.title}</h2>
                   <p className="text-sm">{paper.authors}</p>
                   <p className="text-sm text-gray-300">{paper.year}</p>
                 </div>
@@ -107,6 +109,10 @@ const PapersPage = () => {
                 </p>
               </div>
             </article>
+            {/* tooltip for the hover */}
+            <div className="tooltip">
+              {paper.desc || "No description available"}
+            </div>
           </li>
         ))}
       </ul>
