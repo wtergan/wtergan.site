@@ -39,7 +39,7 @@ const LinksPage = () => {
       const { data, error } = await supabase
         .from('links')
         .select('*')    
-        .order('id', { ascending: true });
+        .order('date', { ascending: true });  // descending order
 
       if (error) console.error('Error fetching links:', error);
       else setLinks(data);
@@ -94,12 +94,12 @@ const LinksPage = () => {
               className="entry-card"
             >
               <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-lg font-semibold">{link.title}</h2>
-                  <p className="text-sm">{link.note}</p>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-sm font-semibold truncate">{link.title}</h2>
+                  <p className="text-xs">{link.note}</p>
                 </div>
-                <p className="text-sm text-gray-300">
-                  {new Date(link.date).toLocaleDateString('en-US', {
+                <p className="text-xs text-gray-300 min-w-[80px] text-right">
+                  {new Date(link.date + 'T00:00:00Z').toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric'

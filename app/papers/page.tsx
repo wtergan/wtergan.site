@@ -40,8 +40,8 @@ const PapersPage = () => {
       const { data, error } = await supabase
         .from('papers')
         .select('*')
-        .order('id', { ascending: true });
-
+        .order('date', { ascending: false });  // descending order
+      
       if (error) console.error('Error fetching papers:', error);
       else setPapers(data);
       setLoading(false);
@@ -95,13 +95,13 @@ const PapersPage = () => {
               className="entry-card"
             >
               <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-lg font-semibold">{paper.title}</h2>
-                  <p className="text-sm">{paper.authors}</p>
-                  <p className="text-sm text-gray-300">{paper.year}</p>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-sm font-semibold truncate">{paper.title}</h2>
+                  <p className="text-xs">{paper.authors}</p>
+                  <p className="text-xs text-gray-300">{paper.year}</p>
                 </div>
-                <p className="text-sm text-gray-300">
-                  {new Date(paper.date).toLocaleDateString('en-US', {
+                <p className="text-xs text-gray-300 min-w-[80px] text-right">
+                {new Date(paper.date + 'T00:00:00Z').toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric'
