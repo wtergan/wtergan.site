@@ -39,7 +39,7 @@ const LinksPage = () => {
       const { data, error } = await supabase
         .from('links')
         .select('*')    
-        .order('date', { ascending: true });  // descending order
+        .order('date', { ascending: false });  // descending order
 
       if (error) console.error('Error fetching links:', error);
       else setLinks(data);
