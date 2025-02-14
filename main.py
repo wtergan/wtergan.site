@@ -16,30 +16,30 @@ def insert_data(data, table_name):
 
 # taking user input for table data.
 def get_table_data():
-    table_name = input('enter table name (links, papers?)').strip()
+    table_name = input('Enter table name (links, papers?)').strip()
     data = []
 
-    print(f"adding entries for {table_name}....... ")  
+    print(f"Adding entries for {table_name}....... ")  
     while True:
-        print("\nenter details for next item:")
+        print("\nEnter details for next item:")
         entry = {}
         while True:
             if table_name == 'links':
-                print(f"{table_name} fields: title, url, date, note (if needed), desc (if needed). id not needed.")
+                print(f"{table_name} FIELDS: TITLE, URL, DATE, NOTE (if needed), DESC (if needed). id not needed.")
             elif table_name == 'papers':
-                print(f"{table_name} fields: title, authors, url, year, date, desc (if needed). id not needed.")
-            field = input("field name (or end to stop entry), or end to finish: ").strip().lower()
-            if field == 'end':
+                print(f"{table_name} FIELDS: TITLE, AUTHORS, URL, YEAR, DATE, DESC (if needed). id not needed.")
+            field = input("Field name (or end to stop entry), or end to finish: ").strip().upper()
+            if field == 'END':
                 break
-            value = input(f"value for {field}: ").strip()
+            value = input(f"Value for {field}: ").strip()
             entry[field] = value
         if entry:
             data.append(entry)
         else:
-            print("no field added.... skipping entry.")
+            print("No field added.... skipping entry.")
 
-        cont = input("add another entry? (yes/no)").strip().lower()
-        if cont == 'no':
+        cont = input("Add another entry? (yes/no)").strip().upper()
+        if cont == 'NO':
             break
 
     return table_name, data
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         else:
             print("No data to insert. Skipping...")
 
-        cont = input("Do you want to add data to another table? (yes/no): ").strip().lower()
-        if cont == 'no':
+        cont = input("Do you want to add data to another table? (yes/no): ").strip().upper()
+        if cont == 'NO':
             print("Exiting.")
             break
