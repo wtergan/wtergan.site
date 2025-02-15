@@ -102,7 +102,8 @@ const LinksPage = () => {
                   {new Date(link.date + 'T00:00:00Z').toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
-                    day: 'numeric'
+                    day: 'numeric',
+                    timeZone: 'utc'
                   })}
                 </p>
               </div>
