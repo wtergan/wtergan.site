@@ -83,7 +83,7 @@ const LinksPage = () => {
       </div>
       <ul className="space-y-0">
         {filteredLinks.map((link) => (
-          <li key={link.id}>
+          <li key={link.id} className="relative group">
             <article
               tabIndex={0}
               aria-label={`${link.title}`}
