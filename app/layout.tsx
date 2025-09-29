@@ -2,6 +2,7 @@ import React from 'react'
 import './globals.css'
 import { ReactNode } from 'react'
 import HeaderNav from './HeaderNav'
+import { ThemeProvider } from './ThemeContext'
 
 export const metadata = {
   title: 'wtergan',
@@ -15,13 +16,15 @@ interface RootLayoutProps {
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">
-      <body className="bg-gray-900 text-gray-300">
-        {/* Header Navigation */}
-        <HeaderNav />
-        {/* Main Content */}
-        <main className="mx-auto px-6 py-4">
-          {children}
-        </main>
+      <body>
+        <ThemeProvider>
+          {/* Header Navigation */}
+          <HeaderNav />
+          {/* Main Content */}
+          <main>
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   )
