@@ -1,12 +1,13 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 
-type Theme = 'light' | 'dark'
+export type Theme = 'light' | 'dark'
 
 interface ThemeContextType {
   theme: Theme
   toggleTheme: () => void
+  setTheme: (theme: Theme) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -23,20 +24,39 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setTheme] = useState<Theme>('dark')
 
   useEffect(() => {
+    const storedState = localStorage.getItem('terminal-os/state')
+    if (storedState) {
+      try {
+        const parsed = JSON.parse(storedState) as {
+          preferences?: { theme?: Theme }
+        }
+        const storedTheme = parsed?.preferences?.theme
+        if (storedTheme === 'light' || storedTheme === 'dark') {
+          setTheme(storedTheme)
+          return
+        }
+      } catch (error) {
+        console.warn('Failed to read theme from OS state', error)
+      }
+    }
+
     const savedTheme = localStorage.getItem('theme') as Theme
-    if (savedTheme) {
+    if (savedTheme === 'light' || savedTheme === 'dark') {
       setTheme(savedTheme)
     }
   }, [])
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark'
-    setTheme(newTheme)
-    localStorage.setItem('theme', newTheme)
-  }
+  const applyTheme = useCallback((nextTheme: Theme) => {
+    setTheme(nextTheme)
+    localStorage.setItem('theme', nextTheme)
+  }, [])
+
+  const toggleTheme = useCallback(() => {
+    applyTheme(theme === 'dark' ? 'light' : 'dark')
+  }, [applyTheme, theme])
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme: applyTheme }}>
       {children}
     </ThemeContext.Provider>
   )

@@ -14,7 +14,9 @@ import AboutApp from '../../components/os/apps/AboutApp'
 import PapersApp from '../../components/os/apps/PapersApp'
 import LinksApp from '../../components/os/apps/LinksApp'
 import ProjectsApp from '../../components/os/apps/ProjectsApp'
-import type { AppId } from '../../components/os/types'
+import SettingsApp from '../../components/os/apps/SettingsApp'
+import type { AppId, Preferences, WallpaperId } from '../../components/os/types'
+import { WALLPAPER_PRESETS } from '../../components/os/wallpapers'
 import { useTheme } from '../ThemeContext'
 
 type WindowRecord = {
@@ -40,7 +42,18 @@ type PersistedWindow = {
   minimized: boolean
 }
 
-const STORAGE_KEY = 'terminal-os/windows@v1'
+const STORAGE_KEY = 'terminal-os/state'
+const LEGACY_STORAGE_KEY = 'terminal-os/windows'
+const STORAGE_VERSION = 2 as const
+
+const DEFAULT_WALLPAPER: WallpaperId = 'aurora'
+const DEFAULT_PREFERENCES: Preferences = {
+  wallpaper: DEFAULT_WALLPAPER,
+}
+
+type PersistedPreferences = Partial<Preferences> & {
+  theme?: 'light' | 'dark'
+}
 
 const clampValue = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
 
@@ -49,16 +62,21 @@ const APP_DEFS: Record<AppId, { title: string; defaultSize: [number, number] }> 
   papers: { title: 'Papers', defaultSize: [760, 520] },
   links: { title: 'Links', defaultSize: [720, 500] },
   projects: { title: 'Projects', defaultSize: [600, 420] },
+  settings: { title: 'System Settings', defaultSize: [520, 420] },
 }
 
 export default function OSPage() {
-  const { theme } = useTheme()
+  const { theme, toggleTheme, setTheme: applyTheme } = useTheme()
   const isDark = theme === 'dark'
   const [windows, setWindows] = useState<WindowRecord[]>([])
+  const [preferences, setPreferences] = useState<Preferences>(DEFAULT_PREFERENCES)
   const [showStart, setShowStart] = useState(false)
   const [announcement, setAnnouncement] = useState('')
   const counterRef = useRef(0)
   const zTop = useRef(1)
+  const hydratedRef = useRef(false)
+  const wallpaperPreset = WALLPAPER_PRESETS[preferences.wallpaper] ?? WALLPAPER_PRESETS[DEFAULT_WALLPAPER]
+  const accentColor = wallpaperPreset.accent
 
   const announce = useCallback((message: string) => {
     setAnnouncement(prev => {
@@ -103,12 +121,13 @@ export default function OSPage() {
   }, [])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY)
-      if (!raw) return
-      const parsed = JSON.parse(raw) as { windows?: PersistedWindow[] }
-      const restored = (parsed?.windows ?? [])
+    if (typeof window === 'undefined' || hydratedRef.current) return
+    hydratedRef.current = true
+
+    const hydrateWindows = (entries: PersistedWindow[] | undefined) => {
+      if (!entries?.length) return
+
+      const restored = entries
         .map(windowState => {
           const def = APP_DEFS[windowState.appId]
           if (!def) return null
@@ -129,10 +148,63 @@ export default function OSPage() {
       zTop.current = sorted.length ? sorted[sorted.length - 1].z : 1
       counterRef.current = sorted.length
       setWindows(sorted)
-    } catch (error) {
-      console.error('Failed to restore OS windows', error)
     }
-  }, [clampWindowRecord])
+
+    const applyPreferencesFromStorage = (prefs?: PersistedPreferences | null) => {
+      if (!prefs) return
+      setPreferences(prev => {
+        const next: Preferences = {
+          ...prev,
+          wallpaper: prefs.wallpaper ?? prev.wallpaper ?? DEFAULT_WALLPAPER,
+          theme: prefs.theme ?? prev.theme,
+        }
+        if (next.wallpaper === prev.wallpaper && next.theme === prev.theme) {
+          return prev
+        }
+        return next
+      })
+      if (prefs.theme && prefs.theme !== theme) {
+        applyTheme(prefs.theme)
+      }
+    }
+
+    const migrateLegacy = (raw: string | null) => {
+      if (!raw) return false
+      try {
+        const parsed = JSON.parse(raw) as { version?: number; windows?: PersistedWindow[] }
+        hydrateWindows(parsed?.windows)
+        return true
+      } catch (error) {
+        console.error('Failed to migrate legacy OS windows', error)
+        return false
+      }
+    }
+
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw) as {
+          version?: number
+          windows?: PersistedWindow[]
+          preferences?: PersistedPreferences | null
+        }
+        if (parsed.version !== STORAGE_VERSION) {
+          window.localStorage.removeItem(STORAGE_KEY)
+        } else {
+          hydrateWindows(parsed?.windows)
+          applyPreferencesFromStorage(parsed?.preferences ?? null)
+          return
+        }
+      }
+
+      const legacyRaw = window.localStorage.getItem(LEGACY_STORAGE_KEY)
+      if (migrateLegacy(legacyRaw)) {
+        window.localStorage.removeItem(LEGACY_STORAGE_KEY)
+      }
+    } catch (error) {
+      console.error('Failed to restore OS state', error)
+    }
+  }, [applyTheme, clampWindowRecord, theme])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -146,8 +218,25 @@ export default function OSPage() {
       z: win.z,
       minimized: win.minimized,
     }))
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ windows: payload }))
-  }, [windows])
+
+    const state = {
+      version: STORAGE_VERSION,
+      windows: payload,
+      preferences: {
+        wallpaper: preferences.wallpaper,
+        ...(preferences.theme ? { theme: preferences.theme } : {}),
+      },
+    }
+
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  }, [windows, preferences])
+
+  useEffect(() => {
+    setPreferences(prev => {
+      if (prev.theme === theme) return prev
+      return { ...prev, theme }
+    })
+  }, [theme])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -296,6 +385,15 @@ export default function OSPage() {
         return <LinksApp />
       case 'projects':
         return <ProjectsApp />
+      case 'settings':
+        return (
+          <SettingsApp
+            isDark={isDark}
+            preferences={preferences}
+            onChangePreferences={setPreferences}
+            onToggleTheme={toggleTheme}
+          />
+        )
       default:
         return null
     }
@@ -306,6 +404,7 @@ export default function OSPage() {
     { appId: 'papers', label: 'Papers' },
     { appId: 'links', label: 'Links' },
     { appId: 'projects', label: 'Projects' },
+    { appId: 'settings', label: 'Settings' },
   ]
 
   return (
@@ -317,7 +416,7 @@ export default function OSPage() {
       <div className="sr-only" aria-live="polite">
         {announcement}
       </div>
-      <Desktop isDark={isDark} onOpen={openApp} />
+      <Desktop isDark={isDark} wallpaper={preferences.wallpaper} onOpen={openApp} />
 
       {orderedWindows.map(win => (
         <Window
@@ -331,6 +430,7 @@ export default function OSPage() {
           zIndex={win.z}
           minimized={win.minimized}
           isActive={win.z === topZ}
+          accentColor={accentColor}
           onFocus={() => focusWindow(win.id)}
           onClose={() => closeWindow(win.id)}
           onMinimize={() => minimizeWindow(win.id)}
@@ -343,9 +443,11 @@ export default function OSPage() {
 
       <Taskbar
         isDark={isDark}
+        accentColor={accentColor}
         runningWindows={windows}
         apps={taskbarApps}
         onToggleStart={() => setShowStart(prev => !prev)}
+        onToggleTheme={toggleTheme}
         onTaskClick={id => {
           const win = windows.find(w => w.id === id)
           if (!win) return
@@ -361,6 +463,7 @@ export default function OSPage() {
       {showStart && (
         <StartMenu
           isDark={isDark}
+          accentColor={accentColor}
           onClose={() => setShowStart(false)}
           onSelect={appId => openApp(appId)}
         />

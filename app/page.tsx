@@ -1,14 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useTheme } from './ThemeContext';
 
 const HomePage = () => {
   const { theme } = useTheme()
   const [isProfileHovered, setIsProfileHovered] = useState(false)
   const isDark = theme === 'dark'
+  const router = useRouter()
+
+  useEffect(() => {
+    router.replace('/os')
+  }, [router])
 
   return (
     <div className={`min-h-screen font-mono p-8 pt-24 ${
@@ -44,32 +50,22 @@ const HomePage = () => {
         </div>
       </header>
 
-      {/* What's Up Section */}
-      <section className="mb-12">
-        <h2 className="text-lg font-bold mb-4">what's up?</h2>
-        <div className={`text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-          <p>- im will, aka wtergan. swe and indie ml researcher building cool things with ai!</p>
-          <p>- the new terminal os is the home for my papers, links, and projects. hop in and poke around.</p>
-        </div>
-      </section>
-
-      {/* OS Section */}
+      {/* Redirect Notice */}
       <section className="mb-12">
         <h2 className="text-lg font-bold mb-4">terminal os</h2>
         <div className={`text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-          <p>launch the desktop for curated papers, ai resources, and tinkering logs—all in one place.</p>
+          <p>- redirecting you to the terminal desktop where everything now lives.</p>
+          <p>
+            - if nothing happens, manually head over to{' '}
+            <Link
+              href="/os"
+              className={`underline ${isDark ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}
+            >
+              /os
+            </Link>
+            .
+          </p>
         </div>
-        <Link
-          href="/os"
-          className={`mt-4 inline-flex items-center gap-2 rounded border px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
-            isDark
-              ? 'border-gray-700 bg-gray-900 text-gray-200 hover:border-blue-500 hover:text-blue-400 focus-visible:outline-blue-400'
-              : 'border-gray-300 bg-white text-gray-700 hover:border-blue-500 hover:text-blue-600 focus-visible:outline-blue-500'
-          }`}
-        >
-          <span>open terminal os</span>
-          <span aria-hidden>→</span>
-        </Link>
       </section>
 
       {/* Contact Section */}

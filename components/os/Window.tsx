@@ -1,7 +1,12 @@
 'use client'
 
-import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
+import type {
+  CSSProperties,
+  KeyboardEvent as ReactKeyboardEvent,
+  PointerEvent as ReactPointerEvent,
+} from 'react'
 import { ReactNode, useEffect, useRef, useState } from 'react'
+import { hexToRgba } from './utils'
 
 interface WindowProps {
   id: string
@@ -13,6 +18,7 @@ interface WindowProps {
   zIndex: number
   minimized: boolean
   isActive: boolean
+  accentColor: string
   onFocus: () => void
   onClose: () => void
   onMinimize: () => void
@@ -39,6 +45,7 @@ export default function Window({
   zIndex,
   minimized,
   isActive,
+  accentColor,
   onFocus,
   onClose,
   onMinimize,
@@ -53,6 +60,10 @@ export default function Window({
   const captureTarget = useRef<HTMLElement | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isCompact, setIsCompact] = useState(false)
+  const accent = accentColor || '#60a5fa'
+  const activeBorder = hexToRgba(accent, 0.65)
+  const activeGlow = hexToRgba(accent, 0.35)
+  const headerAccent = hexToRgba(accent, 0.22)
 
   useEffect(() => {
     const updateViewportMode = () => {
@@ -187,25 +198,46 @@ export default function Window({
     }
   }
 
+  const windowStyle: CSSProperties = {
+    left: x,
+    top: y,
+    width,
+    height,
+    zIndex,
+    ...(isActive
+      ? {
+          borderColor: activeBorder,
+          boxShadow: `0 24px 48px -26px ${activeGlow}, 0 0 0 1px ${activeBorder}`,
+        }
+      : {}),
+  }
+
   return (
     <div
       ref={winRef}
       role="dialog"
       aria-label={title}
       tabIndex={-1}
-      className={`fixed flex flex-col overflow-hidden rounded-md border shadow-lg transition-shadow duration-150 ${
-        isActive ? 'border-blue-400/70 shadow-2xl' : 'border-black/10 dark:border-white/10'
+      className={`fixed flex flex-col overflow-hidden rounded-xl border backdrop-blur-xl transition-[box-shadow,transform] duration-200 ease-out motion-reduce:transition-none motion-reduce:shadow-none ${
+        isActive ? 'shadow-2xl' : 'shadow-lg'
       } ${isDragging ? 'cursor-grabbing' : ''}`}
-      style={{ left: x, top: y, width, height, zIndex }}
+      style={windowStyle}
       onPointerDown={handleFocusAny}
       onKeyDown={handleKeyDown}
     >
       <div
-        className="flex h-10 shrink-0 items-center justify-between border-b border-black/10 bg-gradient-to-b from-white/85 to-white/65 px-3 text-xs font-medium text-black/80 dark:border-white/10 dark:from-[#1b1b1b] dark:to-[#101010] dark:text-white/80"
+        className="flex h-10 shrink-0 items-center justify-between border-b border-black/10 bg-white/90 px-3 text-xs font-medium text-black/80 backdrop-blur-sm dark:border-white/10 dark:bg-[#181818]/90 dark:text-white/80"
         onPointerDown={event => {
           onFocus()
           beginDrag(event)
         }}
+        style={
+          isActive
+            ? {
+                backgroundImage: `linear-gradient(135deg, ${headerAccent} 0%, transparent 60%)`,
+              }
+            : undefined
+        }
       >
         <div className="flex items-center gap-2">
           <button
@@ -223,7 +255,7 @@ export default function Window({
           <span className="ml-2 truncate">{title}</span>
         </div>
       </div>
-      <div className="flex-1 overflow-auto bg-white/95 p-3 text-sm text-black/80 dark:bg-black/70 dark:text-white/80">
+      <div className="flex-1 overflow-auto bg-white/85 p-5 text-sm text-black/80 backdrop-blur-sm dark:bg-black/60 dark:text-white/80">
         {children}
       </div>
       {!isCompact && (

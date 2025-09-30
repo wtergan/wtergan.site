@@ -1,7 +1,6 @@
 import React from 'react'
 import './globals.css'
 import { ReactNode } from 'react'
-import HeaderNav from './HeaderNav'
 import { ThemeProvider } from './ThemeContext'
 
 export const metadata = {
@@ -18,9 +17,6 @@ const RootLayout = ({ children }: RootLayoutProps) => {
     <html lang="en">
       <body>
         <ThemeProvider>
-          {/* Header Navigation */}
-          <HeaderNav />
-          {/* Main Content */}
           <main>
             {children}
           </main>

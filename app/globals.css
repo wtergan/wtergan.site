@@ -19,6 +19,12 @@ html, body {
     color: #BBBEBF;
     overflow-x: hidden;
   }
+
+@media (prefers-reduced-motion: reduce) {
+  html, body {
+    animation: none;
+  }
+}
   
 .nav-item:hover {
   box-shadow: none;
