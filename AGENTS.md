@@ -238,3 +238,14 @@ Owner’s note: This plan is grounded against the repo state on 2025-09-29 and t
 
 #### References
 - Acceptance criteria from “Phase 1 — Ship OS Mode” are now satisfied (desktop renders, windows focus/minimize/resize, header link live). Phase 2+ items remain open.
+
+### Update — 2025-09-30 (Phase 2 In Progress)
+- Centralized browser Supabase access with `lib/supabaseClient.ts` (memoized `createClient`) and added `components/ui/DataState.tsx` for reusable loading/error/empty copy.
+- Refactored Papers and Links pages plus OS mini apps to consume shared utilities, improving resilience when `NEXT_PUBLIC_SUPABASE_*` vars are missing and giving consistent empty-state UI (see app/papers/page.tsx, app/links/page.tsx, components/os/apps/*).
+- Hardened OS window manager: persisted window layout to `localStorage`, clamped bounds on resize, disabled handle on compact viewports, trapped focus, and added `aria-live` announcements for minimize/restore (app/os/page.tsx, components/os/Window.tsx).
+- Build confirmed via `npm run build`; action items now focus on touch hit targets, reduced-motion polish, and documenting localStorage schema versioning.
+
+#### Phase 2 Follow-ups
+1. Document/implement version bump strategy for `terminal-os/windows@v1` storage before introducing layout-breaking tweaks.
+2. Audit Start menu and taskbar interactions on touch (hit areas, long-press) and consider exposing resize toggle in settings.
+3. Add reduced-motion guards for wallpaper gradients and window shadow transitions.
