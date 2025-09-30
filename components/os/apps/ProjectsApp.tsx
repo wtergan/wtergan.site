@@ -1,18 +1,17 @@
 'use client'
 
-import Link from 'next/link'
-
 export default function ProjectsApp() {
   return (
     <div className="space-y-3 text-sm">
       <p className="opacity-80">
-        Projects live on the main site as long-form write-ups. Open the Projects page to browse everything or use the
-        taskbar to keep this shortcut handy.
+        Project breakdowns will live directly inside this window going forward. The legacy `/projects` page has been
+        retired, so the OS is now the single source of truth.
       </p>
-      <Link href="/projects" className="inline-flex items-center gap-2 rounded-md bg-blue-500/90 px-3 py-1 text-sm font-semibold text-white shadow hover:bg-blue-500">
-        View /projects
-      </Link>
-      <p className="text-xs opacity-60">Future idea: add a dedicated Projects window with Supabase-backed filters.</p>
+      <p className="opacity-80">
+        Short term: surface a curated list of current builds with quick context and live demos. Longer term: hook this
+        into Supabase so projects share the same filtering/search experience as Papers and Links.
+      </p>
+      <p className="text-xs opacity-60">Future idea: filter by status (shipping, in-progress, archived) and stack.</p>
     </div>
   )
 }

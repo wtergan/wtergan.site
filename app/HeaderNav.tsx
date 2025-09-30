@@ -6,10 +6,6 @@ import { usePathname } from 'next/navigation'
 import { useTheme } from './ThemeContext'
 
 const navItems = [
-  { label: 'projects', href: '/projects' },
-  { label: 'blogs', href: '/blogs' },
-  { label: 'papers', href: '/papers' },
-  { label: 'links', href: '/links' },
   { label: 'os', href: '/os' },
 ]
 
@@ -23,9 +19,11 @@ const HeaderNav = () => {
   const menuRef = useRef<HTMLDivElement | null>(null)
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
+  const hasMenu = navItems.length > 1
+  const singleNavItem = !hasMenu ? navItems[0] : null
 
   useEffect(() => {
-    if (!menuOpen) return
+    if (!hasMenu || !menuOpen) return
 
     const handlePointerDown = (event: MouseEvent | PointerEvent) => {
       const target = event.target as Node
@@ -47,21 +45,24 @@ const HeaderNav = () => {
       window.removeEventListener('pointerdown', handlePointerDown)
       window.removeEventListener('keydown', handleKey)
     }
-  }, [menuOpen])
+  }, [hasMenu, menuOpen])
 
   useEffect(() => {
+    if (!hasMenu) return
     if (menuOpen && focusIndex >= 0) {
       itemRefs.current[focusIndex]?.focus()
     }
-  }, [menuOpen, focusIndex])
+  }, [hasMenu, menuOpen, focusIndex])
 
   useEffect(() => {
+    if (!hasMenu) return
     if (!menuOpen) {
       setFocusIndex(-1)
     }
-  }, [menuOpen])
+  }, [hasMenu, menuOpen])
 
   const toggleMenu = () => {
+    if (!hasMenu) return
     setMenuOpen(prev => {
       const next = !prev
       if (next) {
@@ -72,7 +73,7 @@ const HeaderNav = () => {
   }
 
   const handleMenuKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!menuOpen) return
+    if (!hasMenu || !menuOpen) return
 
     switch (event.key) {
       case 'ArrowDown': {
@@ -103,6 +104,7 @@ const HeaderNav = () => {
   }
 
   const handleButtonMouseEnter = () => {
+    if (!hasMenu) return
     if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
       setMenuOpen(true)
       setFocusIndex(0)
@@ -110,6 +112,7 @@ const HeaderNav = () => {
   }
 
   const handleMenuMouseLeave = () => {
+    if (!hasMenu) return
     if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
       setMenuOpen(false)
     }
@@ -148,66 +151,79 @@ const HeaderNav = () => {
           </Link>
         </div>
 
-        <div className="relative" onMouseLeave={handleMenuMouseLeave}>
-          <button
-            ref={buttonRef}
-            type="button"
-            className="flex flex-col items-end gap-1 rounded px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
-            aria-label="Open navigation menu"
-            aria-haspopup="true"
-            aria-expanded={menuOpen}
-            aria-controls="primary-menu"
-            onClick={toggleMenu}
-            onMouseEnter={handleButtonMouseEnter}
-          >
-            <span className={`block h-0.5 w-6 ${isDark ? 'bg-gray-300' : 'bg-gray-700'}`} />
-            <span className={`block h-0.5 w-6 ${isDark ? 'bg-gray-300' : 'bg-gray-700'}`} />
-            <span className={`block h-0.5 w-6 ${isDark ? 'bg-gray-300' : 'bg-gray-700'}`} />
-          </button>
-
-          {menuOpen && (
-            <div
-              ref={menuRef}
-              id="primary-menu"
-              role="menu"
-              aria-label="Primary navigation"
-              className={`absolute top-full right-0 mt-2 min-w-32 rounded border shadow-lg backdrop-blur-sm ${
-                isDark
-                  ? 'bg-black/90 border-gray-600'
-                  : 'bg-white/95 border-gray-300'
-              }`}
-              onKeyDown={handleMenuKeyDown}
+        {hasMenu ? (
+          <div className="relative" onMouseLeave={handleMenuMouseLeave}>
+            <button
+              ref={buttonRef}
+              type="button"
+              className="flex flex-col items-end gap-1 rounded px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+              aria-label="Open navigation menu"
+              aria-haspopup="true"
+              aria-expanded={menuOpen}
+              aria-controls="primary-menu"
+              onClick={toggleMenu}
+              onMouseEnter={handleButtonMouseEnter}
             >
-              <ul className="py-1">
-                {navItems.map((nav, index) => {
-                  const isActive = pathname === nav.href
-                  return (
-                    <li key={nav.href}>
-                      <Link
-                        href={nav.href}
-                        ref={node => {
-                          itemRefs.current[index] = node
-                        }}
-                        role="menuitem"
-                        tabIndex={-1}
-                        onClick={() => setMenuOpen(false)}
-                        className={`block px-4 py-2 text-sm font-mono transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
-                          isActive
-                            ? 'text-blue-400'
-                            : isDark
-                              ? 'text-gray-300 hover:text-blue-400 focus-visible:outline-blue-400'
-                              : 'text-gray-700 hover:text-blue-600 focus-visible:outline-blue-500'
-                        }`}
-                      >
-                        {nav.label}
-                      </Link>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          )}
-        </div>
+              <span className={`block h-0.5 w-6 ${isDark ? 'bg-gray-300' : 'bg-gray-700'}`} />
+              <span className={`block h-0.5 w-6 ${isDark ? 'bg-gray-300' : 'bg-gray-700'}`} />
+              <span className={`block h-0.5 w-6 ${isDark ? 'bg-gray-300' : 'bg-gray-700'}`} />
+            </button>
+
+            {menuOpen && (
+              <div
+                ref={menuRef}
+                id="primary-menu"
+                role="menu"
+                aria-label="Primary navigation"
+                className={`absolute top-full right-0 mt-2 min-w-32 rounded border shadow-lg backdrop-blur-sm ${
+                  isDark
+                    ? 'bg-black/90 border-gray-600'
+                    : 'bg-white/95 border-gray-300'
+                }`}
+                onKeyDown={handleMenuKeyDown}
+              >
+                <ul className="py-1">
+                  {navItems.map((nav, index) => {
+                    const isActive = pathname === nav.href
+                    return (
+                      <li key={nav.href}>
+                        <Link
+                          href={nav.href}
+                          ref={node => {
+                            itemRefs.current[index] = node
+                          }}
+                          role="menuitem"
+                          tabIndex={-1}
+                          onClick={() => setMenuOpen(false)}
+                          className={`block px-4 py-2 text-sm font-mono transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                            isActive
+                              ? 'text-blue-400'
+                              : isDark
+                                ? 'text-gray-300 hover:text-blue-400 focus-visible:outline-blue-400'
+                                : 'text-gray-700 hover:text-blue-600 focus-visible:outline-blue-500'
+                          }`}
+                        >
+                          {nav.label}
+                        </Link>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            )}
+          </div>
+        ) : singleNavItem ? (
+          <Link
+            href={singleNavItem.href}
+            className={`text-xs uppercase tracking-wide transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+              isDark
+                ? 'text-gray-300 hover:text-blue-400 focus-visible:outline-blue-400'
+                : 'text-gray-700 hover:text-blue-600 focus-visible:outline-blue-500'
+            }`}
+          >
+            {singleNavItem.label}
+          </Link>
+        ) : null}
       </div>
     </nav>
   )

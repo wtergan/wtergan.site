@@ -249,3 +249,8 @@ Owner’s note: This plan is grounded against the repo state on 2025-09-29 and t
 1. Document/implement version bump strategy for `terminal-os/windows@v1` storage before introducing layout-breaking tweaks.
 2. Audit Start menu and taskbar interactions on touch (hit areas, long-press) and consider exposing resize toggle in settings.
 3. Add reduced-motion guards for wallpaper gradients and window shadow transitions.
+
+### Update — 2025-09-30 (Phase 2.5 Plan)
+- Goal: collapse the legacy multi-page site so the OS experience becomes the primary surface. Retire `/projects`, `/papers`, `/links`, `/blogs`, and other redundant routes so the desktop apps are the single source of truth.
+- Tasks: remove the corresponding page directories, prune navigation items to just `home` and `os`, and refresh the homepage copy to funnel visitors into the OS (link, CTA, or automatic redirect TBD).
+- Notes: keep Supabase data flows intact via the OS mini apps; ensure header/footer/metadata no longer reference removed sections; document the change as the starting point for Phase 3 polish work.

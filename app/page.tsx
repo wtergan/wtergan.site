@@ -49,65 +49,27 @@ const HomePage = () => {
         <h2 className="text-lg font-bold mb-4">what's up?</h2>
         <div className={`text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
           <p>- im will, aka wtergan. swe and indie ml researcher building cool things with ai!</p>
-          <p>
-            - im always reading ml papers and blogs, check out what im reading via the{' '}
-            <Link 
-              href="/papers" 
-              className={`underline ${isDark ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}
-            >
-              papers
-            </Link>{' '}
-            and{' '}
-            <Link 
-              href="/links" 
-              className={`underline ${isDark ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}
-            >
-              links
-            </Link>{' '}
-            pages.
-          </p>
-          <p>
-            - im also always building cool things with ai! check out what im building via the{' '}
-            <Link 
-              href="/projects" 
-              className={`underline ${isDark ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}
-            >
-              projects
-            </Link>{' '}
-            page.
-          </p>
+          <p>- the new terminal os is the home for my papers, links, and projects. hop in and poke around.</p>
         </div>
       </section>
 
-      {/* My blogs Section */}
+      {/* OS Section */}
       <section className="mb-12">
-        <h2 className="text-lg font-bold mb-4">my blogs</h2>
-        <ul className="text-sm">
-          <li className="mb-2">
-            <span className={isDark ? 'text-gray-500' : 'text-gray-600'}>• </span>
-            <Link href="/blogs" className={`underline ${isDark ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}>
-              blogs coming soon...
-            </Link>
-          </li>
-        </ul>
-      </section>
-
-      {/* Project Section, in directory structure */}
-      <section className="mb-12">
-        <h2 className="text-lg font-bold mb-4">projects</h2>
-        <div className={`text-sm font-mono ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-          <div className="mb-2">/home/wtergan/</div>
-          <div className="ml-4">
-            <div className="mb-1">└─ projects</div>
-            <div className={`ml-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              <div>
-                ├─ <Link href="/projects" className={`underline ${isDark ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}>
-                  coming soon...
-                </Link>
-              </div>
-            </div>
-          </div>
+        <h2 className="text-lg font-bold mb-4">terminal os</h2>
+        <div className={`text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+          <p>launch the desktop for curated papers, ai resources, and tinkering logs—all in one place.</p>
         </div>
+        <Link
+          href="/os"
+          className={`mt-4 inline-flex items-center gap-2 rounded border px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+            isDark
+              ? 'border-gray-700 bg-gray-900 text-gray-200 hover:border-blue-500 hover:text-blue-400 focus-visible:outline-blue-400'
+              : 'border-gray-300 bg-white text-gray-700 hover:border-blue-500 hover:text-blue-600 focus-visible:outline-blue-500'
+          }`}
+        >
+          <span>open terminal os</span>
+          <span aria-hidden>→</span>
+        </Link>
       </section>
 
       {/* Contact Section */}

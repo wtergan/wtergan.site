@@ -1,33 +1,18 @@
 'use client'
 
-import Link from 'next/link'
-
 export default function AboutApp() {
   return (
     <div className="space-y-3 text-sm">
       <h2 className="text-base font-semibold">Hey, I’m Will — SWE & indie ML researcher.</h2>
       <p className="opacity-80">
-        This experimental desktop mode mirrors the projects, papers, and links that power my portfolio.
-        Explore the windows or jump back to the traditional pages below.
+        This experimental desktop is now the primary way to browse my work. Each window maps to the
+        same Supabase-backed content that used to live on separate site pages.
       </p>
-      <ul className="space-y-1">
-        <li>
-          <Link href="/projects" className="underline hover:text-blue-400">
-            Projects directory
-          </Link>
-        </li>
-        <li>
-          <Link href="/papers" className="underline hover:text-blue-400">
-            Papers library
-          </Link>
-        </li>
-        <li>
-          <Link href="/links" className="underline hover:text-blue-400">
-            Curated links
-          </Link>
-        </li>
-      </ul>
-      <p className="text-xs opacity-60">Tip: Use the Start menu or desktop icons to launch additional apps.</p>
+      <p className="opacity-80">
+        Use the Start menu or desktop icons to launch apps like Papers, Links, and Projects. Your window layouts
+        persist locally, so feel free to arrange the workspace however you want.
+      </p>
+      <p className="text-xs opacity-60">Tip: Right-click or long-press the desktop to discover upcoming shortcuts.</p>
     </div>
   )
 }

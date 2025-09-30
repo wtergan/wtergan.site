@@ -6,7 +6,7 @@ import { ThemeProvider } from './ThemeContext'
 
 export const metadata = {
   title: 'wtergan',
-  description: 'showcasing projects, blog posts, papers, etc.',
+  description: 'terminal-inspired desktop for projects, papers, and links.',
 }
 
 interface RootLayoutProps {
